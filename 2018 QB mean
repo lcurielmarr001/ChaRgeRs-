@@ -1,0 +1,17 @@
+#Qb code from Ben Baldwin edited to include qb_mean_air_yards for Air Yards charts 
+
+qbs_2018<-pbp_rp2018%>%mutate(name = ifelse(!is.na(passer_player_name), passer_player_name, rusher_player_name),
+                              rusher = rusher_player_name,
+                              receiver = receiver_player_name,
+                              play = 1) %>% group_by(name, posteam) %>%filter(!is.na(air_yards))%>% summarize(n_dropbacks = sum(pass), n_rush = sum(rush), n_plays = sum(play),epa_per_play = sum(epa) / n_plays,success_per_play = sum(success) / n_plays, total_air_yards=sum(air_yards), mean_air_yards=(total_air_yards/n_dropbacks))%>%ungroup() 
+qbs_2018
+qb_epa_per_play <- qbs_2018 %>%
+  summarize(mean = mean(epa_per_play)) %>%
+  pull(mean)
+qb_epa_per_play
+
+qb_success_per_play <- qbs_2018 %>%
+  summarize(mean = mean(success_per_play)) %>%
+  pull(mean)
+qb_air_yards<-qbs_2018%>%summarize(mean = mean(mean_air_yards))%>%pull(mean)
+qb_air_yards
